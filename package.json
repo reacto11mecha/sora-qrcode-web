@@ -10,6 +10,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^2.1.7"
+    "astro": "^2.1.7",
+    "picnic": "^7.1.0"
   }
 }

@@ -2,9 +2,11 @@ lockfileVersion: 5.4
 
 specifiers:
   astro: ^2.1.7
+  picnic: ^7.1.0
 
 dependencies:
   astro: 2.1.7
+  picnic: 7.1.0
 
 packages:
 
@@ -2199,6 +2201,11 @@ packages:
 
   /path-to-regexp/6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
+    dev: false
+
+  /picnic/7.1.0:
+    resolution: {integrity: sha512-OFoJClCDSaCnavs7QZPMIIjrodUO8m6V+GBNOWaIN4kk3IjzSAd2kp/RfkpZRwXK2u71q5mJ3UQaQjHJRr3dnw==}
+    engines: {node: '>=4.0.0'}
     dev: false
 
   /picocolors/1.0.0:
