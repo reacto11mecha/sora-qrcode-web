@@ -1,0 +1,17 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+export function getStaticPaths() {
+  return [{ params: { id: "test123" } }];
+}
+---
+
+<Layout title="Kode QR untuk {SIAPA DISINI}">
+  <main></main>
+</Layout>
+
+<script type="module" hoist>
+  import QRCode from "qrcode";
+
+  console.log(QRCode);
+</script>
