@@ -1,17 +1,75 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import path from "path";
+import fs from "fs";
 
 export function getStaticPaths() {
-  return [{ params: { id: "test123" } }];
+  const filePath = path.join(path.resolve(), "data/data-partisipan.json")
+
+  if (!fs.existsSync(filePath)) throw new Error("Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!");
+
+  const unvalidatedData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+  return unvalidatedData.map(participant => ({
+    params: { id: participant.qrId },
+    props: { nama: participant.nama.split(' | ')[1].trim(), qrId: participant.qrId  }
+  }))
 }
+
+const { nama, qrId } = Astro.props;
 ---
 
-<Layout title="Kode QR untuk {SIAPA DISINI}">
-  <main></main>
+<Layout title={`Kode QR sebagai hak pilih untuk ${nama} | ${qrId}`}>
+  <main>
+    <article class="card">
+      <canvas />
+
+      <h2>{nama}</h2>
+
+      <a href={`/qr/${nama}-${qrId}.png`} download={`hakpilih-${nama}-${qrId}.png`}><button>Unduh Gambar</button></a>
+    </article>
+  </main>
 </Layout>
+
+
+<style>
+  main {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  canvas {
+    width: 13em;
+    height: 13em;
+  }
+
+  .card {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  h2 {
+    width: 85%;
+  }
+
+  a {
+    margin-bottom: 1.3em !important;
+  }
+</style>
 
 <script type="module" hoist>
   import QRCode from "qrcode";
 
-  console.log(QRCode);
+  const canvas = document.querySelector('canvas');
+
+  // Mengambil pathname sebagai patokan qrId
+  const qrId = location.pathname.replace("/qr/", "");
+
+  QRCode.toCanvas(canvas, qrId, { width: "228.8" });
 </script>
