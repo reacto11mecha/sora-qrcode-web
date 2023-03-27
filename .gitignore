@@ -21,4 +21,4 @@ pnpm-debug.log*
 .DS_Store
 
 data/*.json
-public/qr/*.png
+public/img/*.png

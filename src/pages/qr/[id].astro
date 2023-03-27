@@ -1,19 +1,64 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { Resvg } from "@resvg/resvg-js";
+import satori from "satori";
+import QRCode from "qrcode";
 import path from "path";
 import fs from "fs";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
   const filePath = path.join(path.resolve(), "data/data-partisipan.json")
+  const publicQr = path.join(path.resolve(), "public/img"); 
 
-  if (!fs.existsSync(filePath)) throw new Error("Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!");
+  if (!fs.existsSync(filePath))
+    throw new Error("Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!");
 
   const unvalidatedData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-  return unvalidatedData.map(participant => ({
-    params: { id: participant.qrId },
-    props: { nama: participant.nama.split(' | ')[1].trim(), qrId: participant.qrId  }
+  const remappedData = await Promise.all(unvalidatedData.map(async participant => { 
+    const reformattedName = participant.nama.split(' | ')[1].trim();
+
+    const fileName = `hakpilih-${reformattedName}-${participant.qrId}.png`;
+    const fullPathToFile = path.join(publicQr, fileName);
+
+    if (!fs.existsSync(fullPathToFile)) {
+      const qrString = await QRCode.toDataURL(participant.qrId, { width: 950 });
+
+      console.log(`NOT FOUND: ${fileName} | Creating new one`);
+
+      const svg = await satori({
+        type: "div",
+        props: {
+          style: { display: "flex" },
+          children: {
+            type: "img",
+            props: {
+              src: qrString
+            }
+          }
+        }
+      },
+      {
+          width: 950,
+          height: 1500
+      });
+
+      console.log(`Done Generating Image: ${fileName}`);
+
+      const resvg = new Resvg(svg);
+      const pngData = resvg.render();
+      const pngBuffer = pngData.asPng();
+
+      fs.writeFileSync(fullPathToFile, pngBuffer);
+    }
+
+    return {
+      params: { id: participant.qrId },
+      props: { nama: reformattedName, qrId: participant.qrId  }
+    }
   }))
+
+  return remappedData;
 }
 
 const { nama, qrId } = Astro.props;
@@ -26,7 +71,7 @@ const { nama, qrId } = Astro.props;
 
       <h2>{nama}</h2>
 
-      <a href={`/qr/${nama}-${qrId}.png`} download={`hakpilih-${nama}-${qrId}.png`}><button>Unduh Gambar</button></a>
+      <a href={`/img/hakpilih-${nama}-${qrId}.png`} download={`hakpilih-${nama}-${qrId}.png`}><button>Unduh Gambar</button></a>
     </article>
   </main>
 </Layout>
