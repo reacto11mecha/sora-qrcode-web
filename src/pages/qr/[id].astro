@@ -1,62 +1,49 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { Resvg } from "@resvg/resvg-js";
-import satori from "satori";
-import QRCode from "qrcode";
 import path from "path";
 import fs from "fs";
 
+import { ValidateData } from "../../utils/validator";
+import { createImage } from "../../utils/createImage";
+
 export async function getStaticPaths() {
-  const filePath = path.join(path.resolve(), "data/data-partisipan.json")
-  const publicQr = path.join(path.resolve(), "public/img"); 
+  const filePath = path.join(path.resolve(), "data/data-partisipan.json");
+  const publicQr = path.join(path.resolve(), "public/img");
 
   if (!fs.existsSync(filePath))
-    throw new Error("Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!");
+    throw new Error(
+      "Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!"
+    );
 
   const unvalidatedData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-  const remappedData = await Promise.all(unvalidatedData.map(async participant => { 
-    const reformattedName = participant.nama.split(' | ')[1].trim();
+  const data = await ValidateData.parseAsync(unvalidatedData);
 
-    const fileName = `hakpilih-${reformattedName}-${participant.qrId}.png`;
+  const remappedData = await Promise.all(
+    data.map(async (participant) => {
+      const reformattedName = participant.nama.split(" | ")[1].trim();
+
+      return {
+        params: { id: participant.qrId },
+        props: { nama: reformattedName, qrId: participant.qrId },
+      };
+    })
+  );
+
+  for (const participant of remappedData) {
+    const fileName = `hakpilih-${participant.props.nama}-${participant.props.qrId}.png`;
     const fullPathToFile = path.join(publicQr, fileName);
 
-    if (!fs.existsSync(fullPathToFile)) {
-      const qrString = await QRCode.toDataURL(participant.qrId, { width: 950 });
+    if (fs.existsSync(fullPathToFile)) continue;
 
-      console.log(`NOT FOUND: ${fileName} | Creating new one`);
+    console.log(`NOT FOUND: ${fileName} | Creating new one`);
 
-      const svg = await satori({
-        type: "div",
-        props: {
-          style: { display: "flex" },
-          children: {
-            type: "img",
-            props: {
-              src: qrString
-            }
-          }
-        }
-      },
-      {
-          width: 950,
-          height: 1500
-      });
-
-      console.log(`Done Generating Image: ${fileName}`);
-
-      const resvg = new Resvg(svg);
-      const pngData = resvg.render();
-      const pngBuffer = pngData.asPng();
-
-      fs.writeFileSync(fullPathToFile, pngBuffer);
-    }
-
-    return {
-      params: { id: participant.qrId },
-      props: { nama: reformattedName, qrId: participant.qrId  }
-    }
-  }))
+    await createImage({
+      fileName,
+      filePath: fullPathToFile,
+      ...participant.props
+    });
+  }
 
   return remappedData;
 }
@@ -67,15 +54,18 @@ const { nama, qrId } = Astro.props;
 <Layout title={`Kode QR sebagai hak pilih untuk ${nama} | ${qrId}`}>
   <main>
     <article class="card">
-      <canvas />
+      <canvas></canvas>
 
       <h2>{nama}</h2>
 
-      <a href={`/img/hakpilih-${nama}-${qrId}.png`} download={`hakpilih-${nama}-${qrId}.png`}><button>Unduh Gambar</button></a>
+      <a
+        href={`/img/hakpilih-${nama}-${qrId}.png`}
+        download={`hakpilih-${nama}-${qrId}.png`}
+        ><button>Unduh Gambar</button></a
+      >
     </article>
   </main>
 </Layout>
-
 
 <style>
   main {
@@ -111,7 +101,7 @@ const { nama, qrId } = Astro.props;
 <script type="module" hoist>
   import QRCode from "qrcode";
 
-  const canvas = document.querySelector('canvas');
+  const canvas = document.querySelector("canvas");
 
   // Mengambil pathname sebagai patokan qrId
   const qrId = location.pathname.replace("/qr/", "");

@@ -10,11 +10,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@resvg/resvg-js": "^2.4.1",
     "astro": "^2.1.7",
     "picnic": "^7.1.0",
+    "puppeteer": "^19.8.0",
     "qrcode": "^1.5.1",
-    "satori": "^0.4.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {
