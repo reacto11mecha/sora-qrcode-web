@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Rubik:wght@500&display=swap"
+        rel="stylesheet" />
+
+    <title>QR hak pilih {{nama}} | {{qrId}}</title>
+</head>
+
+<body>
+    <main>
+        <img src="{{qrString}}" />
+
+        <h1>{{nama}}</h1>
+
+        <pre>{{qrId}}</pre>
+    </main>
+
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 6em;
+            width: 90%;
+            align-self: center;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        pre {
+            text-align: center;
+            font-size: 4.5em;
+            font-family: 'VT323', monospace;
+        }
+    </style>
+</body>
+
+</html>
