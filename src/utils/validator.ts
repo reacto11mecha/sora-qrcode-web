@@ -13,7 +13,7 @@ const validateId = (id: string) =>
 
 export const ValidateData = z.array(
   z.object({
-    nama: z.string().includes(" | "),
+    name: z.string().includes(" | "),
     qrId: z.string().refine(validateId),
   })
 );

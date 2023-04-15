@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 
   const remappedData = await Promise.all(
     data.map(async (participant) => {
-      const reformattedName = participant.nama.split(" | ")[1].trim();
+      const reformattedName = participant.name.split(" | ")[1].trim();
 
       return {
         params: { id: participant.qrId },
