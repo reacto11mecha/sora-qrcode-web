@@ -8,9 +8,9 @@
 
 Ini adalah repositori pendukung untuk [sora#v2](https://github.com/reacto11mecha/sora/tree/v2) karena fiturnya yang membutuhkan peserta pemilih untuk mengunduh gambar QR Code yang dibutuhkan untuk bukti bahwa dia memiliki hak pilih.
 
-## Cara Pemakaian
+## Inisialisasi Web
 
-Di bawah ini adalah tata cara pemakaian repositori ini.
+Di bawah ini hal yang yang harus di lakukan agar web ini bisa memberikan hak kepada pemilih yang terdaftar.
 
 ### Prerequisites
 
@@ -81,3 +81,52 @@ Pada awalnya data json yang di dapatkan dari administrator awalnya tidak bisa di
 ```
 
 ![Setelah di comment](./assets/008-setelah-comment-gitignore.png)
+
+### Push perubahan ke repositori remote
+
+Jangan lupa tambahkan, commit, dan push!
+
+```sh
+git add .
+git commit -m "menambahkan informasi"
+git push
+```
+
+## Hosting
+
+Untuk hosting, silahkan cek halaman [dokumentasi resmi](https://docs.astro.build/en/guides/deploy/) astro yang dapat host static content.
+
+Untuk penjelasan selanjutnya akan dijelaskan bagaimana cara host di vercel. Vercel adalah salah satu platform gratis yang cocok untuk host static content yang skalanya tidak terlalu besar.
+
+Berikut ini adalah langkah-langkah supaya bisa di host static ke vercel.
+
+1. [Login](https://vercel.com/login) terlebih dahulu ke vercel, disarankan menggunakan github provider karena kemudahan akses repositori
+
+2. Deploy repositori yang nantinya akan di akses oleh pemilih. Tekan tombol import.
+
+![List repositori yang di deteksi vercel](./assets/009-pilih-project.png)
+
+3. Akan muncul konfigurasi project, biarkan saja dan tekan tombol deploy.
+
+   ![Tekan tombol deploy](./assets/010-deploy.png)
+
+   Tunggu sampai proses deployment selesai.
+
+4. Selamat, sudah berhasil di deploy 🚀
+
+   ![Berhasil deploy](./assets/011-berhasil-deploy.png)
+
+Web sudah bisa di akses sekarang, sebagai contoh, website https://contoh-repo-qrcode.vercel.app/ adalah contoh yang dapat peserta akses.
+
+Contoh untuk QR Cecep, bisa akses halaman https://contoh-repo-qrcode.vercel.app/qr/7CRO9MTNJ3WW41A dan dibawah ini hasil QR Setelah di download.
+
+![Contoh QR Code Cecep](./assets/qr-cecep.png)
+
+List peserta yang lain
+
+- Ujang => https://contoh-repo-qrcode.vercel.app/qr/4KV9S7ISMNBRUCI
+- Tono => https://contoh-repo-qrcode.vercel.app/qr/98HICZTKNDX1G0P
+
+## Lisensi
+
+Repositori ini bernaung dibawah lisensi [GPLv3](LICENSE).
