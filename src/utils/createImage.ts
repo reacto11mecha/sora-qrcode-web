@@ -6,7 +6,7 @@ import normalFs from "fs";
 import path from "path";
 
 interface IParams {
-  nama: string;
+  name: string;
   qrId: string;
 }
 
@@ -21,22 +21,27 @@ const template = Handlebars.compile<IParams & { qrString: string }>(
 export const createImage = async ({
   fileName,
   filePath,
-  nama,
+  name,
   qrId,
 }: IParams & { filePath: string; fileName: string }) => {
   try {
-    const browser = await puppeteer.launch({});
+    const browser = await puppeteer.launch({
+      defaultViewport: {
+        width: 1920,
+        height: 1080,
+      },
+    });
 
     const qrString = await QRCode.toDataURL(qrId, { width: 950 });
 
     const page = await browser.newPage();
-    await page.setViewport({ width: 950, height: 1655 });
 
-    await page.setContent(template({ qrId, qrString, nama }), {
+    await page.setContent(template({ qrId, qrString, name }), {
       waitUntil: "networkidle0",
     });
 
-    const ss = await page.screenshot();
+    const card = await page.waitForSelector("div");
+    const ss = await card!.screenshot();
 
     await fs.writeFile(filePath, ss);
 

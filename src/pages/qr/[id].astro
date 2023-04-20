@@ -25,13 +25,13 @@ export async function getStaticPaths() {
 
       return {
         params: { id: participant.qrId },
-        props: { nama: reformattedName, qrId: participant.qrId },
+        props: { name: reformattedName, qrId: participant.qrId },
       };
     })
   );
 
   for (const participant of remappedData) {
-    const fileName = `hakpilih-${participant.props.nama}-${participant.props.qrId}.png`;
+    const fileName = `hakpilih-${participant.props.name}-${participant.props.qrId}.png`;
     const fullPathToFile = path.join(publicQr, fileName);
 
     if (fs.existsSync(fullPathToFile)) continue;
@@ -41,26 +41,26 @@ export async function getStaticPaths() {
     await createImage({
       fileName,
       filePath: fullPathToFile,
-      ...participant.props
+      ...participant.props,
     });
   }
 
   return remappedData;
 }
 
-const { nama, qrId } = Astro.props;
+const { name, qrId } = Astro.props;
 ---
 
-<Layout title={`Kode QR sebagai hak pilih untuk ${nama} | ${qrId}`}>
+<Layout title={`Kode QR sebagai hak pilih untuk ${name} | ${qrId}`}>
   <main>
     <article class="card">
       <canvas></canvas>
 
-      <h2>{nama}</h2>
+      <h2>{name}</h2>
 
       <a
-        href={`/img/hakpilih-${nama}-${qrId}.png`}
-        download={`hakpilih-${nama}-${qrId}.png`}
+        href={`/img/hakpilih-${name}-${qrId}.png`}
+        download={`hakpilih-${name}-${qrId}.png`}
         ><button>Unduh Gambar</button></a
       >
     </article>
