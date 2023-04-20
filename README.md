@@ -6,7 +6,7 @@
 
 </p>
 
-Ini adalah repositori pendukung untuk [sora#v2](https://github.com/reacto11mecha/sora/tree/v2) karena fiturnya yang membutuhkan peserta pemilih untuk mengunduh gambar QR Code yang dibutuhkan untuk bukti bahwa dia memiliki hak pilih.
+Ini adalah repositori pendukung untuk [sora](https://github.com/reacto11mecha/sora) karena fiturnya yang membutuhkan peserta pemilih untuk mengunduh gambar QR Code yang dibutuhkan untuk bukti bahwa dia memiliki hak pilih.
 
 ## Inisialisasi Web
 
