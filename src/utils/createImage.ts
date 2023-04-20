@@ -18,6 +18,29 @@ const template = Handlebars.compile<IParams & { qrString: string }>(
   templateString
 );
 
+const CutiveMono = normalFs
+  .readFileSync(path.join(path.resolve(), "src/fonts/CutiveMono-Regular.ttf"))
+  .toString("base64");
+const RubikMedium = normalFs
+  .readFileSync(path.join(path.resolve(), "src/fonts/Rubik-Medium.ttf"))
+  .toString("base64");
+
+const fontStyles = `
+  @font-face {
+    font-family: 'Cutive Mono';
+    src: url('data:application/font-ttf;base64,${CutiveMono}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Rubik';
+    src: url('data:application/font-ttf;base64,${RubikMedium}') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
+`;
+
 export const createImage = async ({
   fileName,
   filePath,
@@ -36,9 +59,8 @@ export const createImage = async ({
 
     const page = await browser.newPage();
 
-    await page.setContent(template({ qrId, qrString, name }), {
-      waitUntil: "networkidle0",
-    });
+    await page.setContent(template({ qrId, qrString, name }));
+    await page.addStyleTag({ content: fontStyles });
 
     const card = await page.waitForSelector("div");
     const ss = await card!.screenshot();
