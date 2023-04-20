@@ -20,5 +20,7 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# Komentari dua baris di bawah ini
+# ketika sudah di clone
 data/*.json
 public/img/*.png
