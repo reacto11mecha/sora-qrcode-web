@@ -63,6 +63,8 @@ export const createImage = async ({
     await page.addStyleTag({ content: fontStyles });
 
     const card = await page.waitForSelector("div");
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const ss = await card!.screenshot();
 
     await fs.writeFile(filePath, ss);

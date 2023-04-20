@@ -1,58 +1,33 @@
-<!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>QR hak pilih {{name}} | {{qrId}}</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <main>
-        <div>
-            <img src="{{qrString}}" />
+      <div>
+        <img src="{{qrString}}" />
 
-            <h1>{{name}}</h1>
+        <h1>{{name}}</h1>
 
-            <pre>{{qrId}}</pre>
-        </div>
+        <pre>{{qrId}}</pre>
+      </div>
     </main>
 
     <style>
-        main, div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        main {
-            width: 100vw;
-            height: 100vh;
-        }
-
-        div {
-            max-width: 950px;
-            border: 0.8em solid;
-            border-image: linear-gradient(45deg, hsla(49, 85%, 54%, 1) 0%, hsla(32, 98%, 49%, 1) 67%) 1;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 5.8em;
-            width: 85%;
-            align-self: center;
-            font-family: 'Rubik', sans-serif;
-        }
-
-        pre {
-            text-align: center;
-            font-size: 4.5em;
-            font-family: 'VT323', monospace;
-        }
+      main, div { display: flex; flex-direction: column; align-items: center;
+      justify-content: center; } main { width: 100vw; height: 100vh; } div {
+      max-width: 950px; border: 0.8em solid; border-image:
+      linear-gradient(45deg, hsla(49, 85%, 54%, 1) 0%, hsla(32, 98%, 49%, 1)
+      67%) 1; } h1 { text-align: center; font-size: 5.8em; width: 85%;
+      align-self: center; font-family: 'Rubik', sans-serif; } pre { text-align:
+      center; font-size: 4.5em; font-family: 'Cutive Mono', monospace; }
     </style>
-</body>
+  </body>
 
 </html>
