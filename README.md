@@ -2,7 +2,7 @@
    <img width="300" height="300" src="./public/sora.png" />
    <h2 align="center">SORA QRCODE WEB</h2>
 
-[![Continuous Integration (Prettier, ESLint, Typescript)](https://github.com/reacto11mecha/sora-qrcode-web/actions/workflows/ci.yml/badge.svg)](https://github.com/reacto11mecha/sora-qrcode-web/actions/workflows/ci.yml)
+[![Continuous Integration (Prettier, ESLint, Typescript)](https://github.com/reacto11mecha/sora-qrcode-web/actions/workflows/ci.yml/badge.svg)](https://github.com/reacto11mecha/sora-qrcode-web/actions/workflows/ci.yml) [![CodeQL](https://github.com/reacto11mecha/sora-qrcode-web/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/reacto11mecha/sora-qrcode-web/actions/workflows/github-code-scanning/codeql)
 
 </p>
 
