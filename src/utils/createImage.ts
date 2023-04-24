@@ -1,45 +1,38 @@
-import Handlebars from "handlebars";
-import puppeteer from "puppeteer";
-import fs from "fs/promises";
-import QRCode from "qrcode";
-import normalFs from "fs";
+import fs from "fs";
 import path from "path";
+import chalk from "chalk";
+import satori from "satori";
+import QRCode from "qrcode";
+import fsp from "fs/promises";
+import { html } from "satori-html";
+import { Resvg } from "@resvg/resvg-js";
+
+import type { ReactNode } from "react";
 
 interface IParams {
   name: string;
   qrId: string;
 }
 
-const templateString = normalFs.readFileSync(
-  path.join(path.resolve(), "src/layouts/Gambar.handlebars"),
-  "utf8"
+const CutiveMonoPath = path.join(
+  path.resolve(),
+  "src/fonts/CutiveMono-Regular.ttf"
 );
-const template = Handlebars.compile<IParams & { qrString: string }>(
-  templateString
-);
+const RubikMediumPath = path.join(path.resolve(), "src/fonts/Rubik-Medium.ttf");
 
-const CutiveMono = normalFs
-  .readFileSync(path.join(path.resolve(), "src/fonts/CutiveMono-Regular.ttf"))
-  .toString("base64");
-const RubikMedium = normalFs
-  .readFileSync(path.join(path.resolve(), "src/fonts/Rubik-Medium.ttf"))
-  .toString("base64");
+const CutiveMono = fs.readFileSync(CutiveMonoPath);
+const RubikMedium = fs.readFileSync(RubikMediumPath);
 
-const fontStyles = `
-  @font-face {
-    font-family: 'Cutive Mono';
-    src: url('data:application/font-ttf;base64,${CutiveMono}') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: 'Rubik';
-    src: url('data:application/font-ttf;base64,${RubikMedium}') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-  }
-`;
+const templateGenerator = (imgSrc: string, name: string, qrId: string) =>
+  html(`
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0.8em solid #F78602; width: 100%; height: 100%;">
+      <img src="${imgSrc}" style="width: 920px;" />
+
+      <h1 style="text-align: center; font-size: 5.8em; width: 85%; align-self: center; font-family: 'Rubik', sans-serif; justify-content: center;">${name}</h1>
+
+      <pre style="text-align: center; font-size: 4.5em; font-family: 'Cutive Mono', monospace;">${qrId}</pre>
+    </div>
+  `) as ReactNode;
 
 export const createImage = async ({
   fileName,
@@ -48,31 +41,41 @@ export const createImage = async ({
   qrId,
 }: IParams & { filePath: string; fileName: string }) => {
   try {
-    const browser = await puppeteer.launch({
-      defaultViewport: {
-        width: 1920,
-        height: 1080,
-      },
+    const qrString = await QRCode.toDataURL(qrId, { width: 950 });
+    const template = templateGenerator(qrString, name, qrId);
+
+    const svg = await satori(template, {
+      width: 950,
+      height: 1450,
+      fonts: [
+        {
+          name: "Cutive Mono",
+          data: CutiveMono,
+          weight: 400,
+          style: "normal",
+        },
+        {
+          name: "Rubik",
+          data: RubikMedium,
+          weight: 500,
+          style: "normal",
+        },
+      ],
     });
 
-    const qrString = await QRCode.toDataURL(qrId, { width: 950 });
+    const resvg = new Resvg(svg, {
+      background: "white",
+      font: {
+        fontFiles: [CutiveMonoPath, RubikMediumPath],
+        loadSystemFonts: false,
+      },
+    });
+    const pngData = resvg.render();
+    const pngBuffer = pngData.asPng();
 
-    const page = await browser.newPage();
+    await fsp.writeFile(filePath, pngBuffer);
 
-    await page.setContent(template({ qrId, qrString, name }));
-    await page.addStyleTag({ content: fontStyles });
-
-    const card = await page.waitForSelector("div");
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ss = await card!.screenshot();
-
-    await fs.writeFile(filePath, ss);
-
-    await page.close();
-    await browser.close();
-
-    console.log(`DONE CREATING IMAGE ${fileName}`);
+    console.log(`${chalk.green("done")} - ${fileName}\n`);
   } catch (error) {
     console.error(error);
 
