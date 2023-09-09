@@ -8,6 +8,7 @@ import { html } from "satori-html";
 import { Resvg } from "@resvg/resvg-js";
 
 import type { ReactNode } from "react";
+import type { AstroIntegrationLogger } from "astro";
 
 interface IParams {
   name: string;
@@ -16,7 +17,7 @@ interface IParams {
 
 const CutiveMonoPath = path.join(
   path.resolve(),
-  "src/fonts/CutiveMono-Regular.ttf"
+  "src/fonts/CutiveMono-Regular.ttf",
 );
 const RubikMediumPath = path.join(path.resolve(), "src/fonts/Rubik-Medium.ttf");
 
@@ -37,9 +38,14 @@ const templateGenerator = (imgSrc: string, name: string, qrId: string) =>
 export const createImage = async ({
   fileName,
   filePath,
+  logger,
   name,
   qrId,
-}: IParams & { filePath: string; fileName: string }) => {
+}: IParams & {
+  filePath: string;
+  fileName: string;
+  logger: AstroIntegrationLogger;
+}) => {
   try {
     const qrString = await QRCode.toDataURL(qrId, { width: 950 });
     const template = templateGenerator(qrString, name, qrId);
@@ -75,9 +81,9 @@ export const createImage = async ({
 
     await fsp.writeFile(filePath, pngBuffer);
 
-    console.log(`${chalk.green("done")} - ${fileName}\n`);
+    logger.info(`${chalk.green("done")} - ${fileName}\n`);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
 
     process.exit();
   }

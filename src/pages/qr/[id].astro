@@ -1,15 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import chalk from "chalk";
 import path from "path";
 import fs from "fs";
 
 import { ValidateData } from "../../utils/validator";
-import { createImage } from "../../utils/createImage";
 
 export async function getStaticPaths() {
   const filePath = path.join(path.resolve(), "data/data-partisipan.json");
-  const publicQr = path.join(path.resolve(), "public/img");
 
   if (!fs.existsSync(filePath))
     throw new Error(
@@ -20,37 +17,10 @@ export async function getStaticPaths() {
 
   const data = await ValidateData.parseAsync(unvalidatedData);
 
-  const remappedData = await Promise.all(
-    data.map(async (participant) => {
-      const reformattedName = participant.name.split(" | ")[1].trim();
-
-      return {
-        params: { id: participant.qrId },
-        props: { name: reformattedName, qrId: participant.qrId },
-      };
-    })
-  );
-
-  for (const participant of remappedData) {
-    const fileName = `hakpilih-${participant.props.name}-${participant.props.qrId}.png`;
-    const fullPathToFile = path.join(publicQr, fileName);
-
-    if (fs.existsSync(fullPathToFile)) continue;
-
-    console.log(
-      `${chalk.yellow("not found")} - ${fileName} | ${chalk.green(
-        "Creating new one"
-      )}`
-    );
-
-    await createImage({
-      fileName,
-      filePath: fullPathToFile,
-      ...participant.props,
-    });
-  }
-
-  return remappedData;
+  return data.map((participant) => ({
+    params: { id: participant.qrId },
+    props: participant
+  }));
 }
 
 const { name, qrId } = Astro.props;
@@ -103,8 +73,7 @@ const { name, qrId } = Astro.props;
   }
 </style>
 
-{/* eslint-disable-next-line astro/valid-compile */}
-<script type="module" hoist>
+<script>
   import QRCode from "qrcode";
 
   const canvas = document.querySelector("canvas");
@@ -112,5 +81,5 @@ const { name, qrId } = Astro.props;
   // Mengambil pathname sebagai patokan qrId
   const qrId = location.pathname.replace("/qr/", "");
 
-  QRCode.toCanvas(canvas, qrId, { width: "228.8" });
+  QRCode.toCanvas(canvas, qrId, { width: 228.8 });
 </script>
