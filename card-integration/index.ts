@@ -35,11 +35,7 @@ export const cardIntegration = (): AstroIntegration => {
 
           if (fs.existsSync(fullPathToFile)) continue;
 
-          logger.info(
-            `${chalk.yellow("not found")} - ${fileName} | ${chalk.green(
-              "Creating new one",
-            )}`,
-          );
+          logger.info(`${chalk.yellow("create")} - ${fileName}`);
 
           await createImage({
             fileName,

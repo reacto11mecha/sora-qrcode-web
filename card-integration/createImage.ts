@@ -83,7 +83,7 @@ export const createImage = async ({
 
     logger.info(`${chalk.green("done")} - ${fileName}\n`);
   } catch (error) {
-    logger.error(error);
+    logger.error(error as string);
 
     process.exit();
   }

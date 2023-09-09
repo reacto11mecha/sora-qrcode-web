@@ -1,32 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+import { InputQr } from "@/components/InputQr";
 ---
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap"
-  rel="stylesheet"
-/>
-
 <Layout title="Hi Buddy">
-  <main>
-    <h1>What are you looking for?</h1>
+  <main class="h-screen flex mx-5 items-center justify-center">
+    <div
+      class="text-xl flex flex-col gap-3 border md:min-w-[26em] max-w-[38em] p-5"
+    >
+      <h1 class="text-3xl font-bold">Masukan QR-ID</h1>
+
+      <div class="flex flex-col gap-2">
+        <p>
+          Masukan QR ID ke input form dibawah ini berdasarkan pengumuman dari
+          panitia.
+        </p>
+        <p>Dimohon untuk menjunjung tinggi nilai kejujuran.</p>
+
+        <p>Tanyakan teman atau hubungi panitia jika masalah terus berlanjut.</p>
+      </div>
+
+      <InputQr client:load />
+    </div>
   </main>
 </Layout>
-
-<style>
-  main {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  h1 {
-    width: 80%;
-    text-align: center;
-    font-family: "Raleway", sans-serif;
-  }
-</style>
