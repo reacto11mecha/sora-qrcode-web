@@ -10,24 +10,16 @@ export const InputQr = () => {
   const [identity, setIdentity] = useState<{
     name: string;
     qrId: string;
+    subpart: string;
   } | null>(null);
 
   return (
     <>
-      <input
-        value={qrId}
-        onChange={(e) => setQrId(e.target.value)}
-        disabled={isLoading}
-        placeholder="Masukan QR ID"
-        className="w-full border p-2 h-12 rounded-md focus-visible:border-neutral-900 focus-visible:border-[0.2px]"
-      />
+      <form
+        className="gap-2 flex flex-col"
+        onSubmit={(e) => {
+          e.preventDefault();
 
-      <button
-        className={`w-full ${
-          isLoading ? "hover:bg-neutral-600" : "bg-neutral-900"
-        } text-white rounded-lg p-1 hover:bg-neutral-600 hover:border-neutral-400 h-12 flex justify-center items-center`}
-        disabled={isLoading || qrId === ""}
-        onClick={() => {
           if (qrId !== "") {
             setLoading(true);
 
@@ -39,18 +31,33 @@ export const InputQr = () => {
                 setErr(false);
               })
               .catch(() => {
-                setLoading(false);
+                setIdentity(null);
                 setErr(true);
+                setLoading(false);
               });
           }
         }}
       >
-        {isLoading ? (
-          <AiOutlineLoading className="animate-spin" />
-        ) : (
-          <>Cek QR</>
-        )}
-      </button>
+        <input
+          value={qrId}
+          onChange={(e) => setQrId(e.target.value)}
+          disabled={isLoading}
+          placeholder="Masukan QR ID"
+          className="w-full border p-2 h-12 rounded-md focus-visible:border-neutral-900 focus-visible:border-[0.2px]"
+        />
+
+        <button
+          className={`w-full ${isLoading ? "bg-neutral-600" : "bg-neutral-900"
+            } text-white rounded-lg p-1 hover:bg-neutral-600 hover:border-neutral-400 h-12 flex justify-center items-center`}
+          disabled={isLoading || qrId === ""}
+        >
+          {isLoading ? (
+            <AiOutlineLoading className="animate-spin" />
+          ) : (
+            <>Cek QR</>
+          )}
+        </button>
+      </form>
 
       <div className="mt-3 text-xl">
         {isError ? (
@@ -64,18 +71,14 @@ export const InputQr = () => {
               <table>
                 <tbody>
                   <tr>
-                    <td>
-                      <b>Nama</b>
-                    </td>
-                    <td>:</td>
-                    <td>{identity.name}</td>
+                    <td className="font-bold">Nama</td>
+                    <td className="font-bold sm:indent-1 md:indent-2 lg:indent-3">:</td>
+                    <td className="indent-2 text-center sm:indent-1  md:indent-2 sm:text-left">{identity.name}</td>
                   </tr>
                   <tr>
-                    <td>
-                      <b>QR ID</b>
-                    </td>
-                    <td>:</td>
-                    <td>{identity.qrId}</td>
+                    <td className="font-bold">Bagian dari</td>
+                    <td className="font-bold sm:indent-1 md:indent-2 lg:indent-3">:</td>
+                    <td className="indent-2 text-center sm:indent-1  md:indent-2 sm:text-left">{identity.subpart}</td>
                   </tr>
                 </tbody>
               </table>

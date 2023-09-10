@@ -69,7 +69,7 @@ parentPort.on("message", async (data) => {
   const fileNames = [];
 
   for (const participant of participants) {
-    const fileName = `hakpilih-${participant.name}-${participant.qrId}.png`;
+    const fileName = `hakpilih-${participant.qrId}.png`;
     const fullPathToFile = path.join(dir, "img", fileName);
 
     if (!fs.existsSync(fullPathToFile)) {

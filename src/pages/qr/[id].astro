@@ -1,5 +1,7 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import { Canvas } from "@/components/Canvas";
+import Layout from "@/layouts/Layout.astro";
+
 import path from "path";
 import fs from "fs";
 
@@ -10,7 +12,7 @@ export async function getStaticPaths() {
 
   if (!fs.existsSync(filePath))
     throw new Error(
-      "Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!"
+      "Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!",
     );
 
   const unvalidatedData = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -19,7 +21,7 @@ export async function getStaticPaths() {
 
   return data.map((participant) => ({
     params: { id: participant.qrId },
-    props: participant
+    props: participant,
   }));
 }
 
@@ -27,59 +29,19 @@ const { name, qrId } = Astro.props;
 ---
 
 <Layout title={`Kode QR sebagai hak pilih untuk ${name} | ${qrId}`}>
-  <main>
-    <article class="card">
-      <canvas></canvas>
+  <main class="flex h-screen items-center justify-center px-5">
+    <div class="border p-8 flex flex-col gap-8">
+      <Canvas qrId={qrId} client:load />
 
-      <h2>{name}</h2>
+      <div class="flex flex-col gap-5 text-center items-center">
+        <h2 class="font-bold text-2xl">{name}</h2>
 
-      <a
-        href={`/img/hakpilih-${name}-${qrId}.png`}
-        download={`hakpilih-${name}-${qrId}.png`}
-        ><button>Unduh Gambar</button></a
-      >
-    </article>
+        <a
+          class="text-lg bg-blue-600 text-white rounded p-[0.1rem] w-[85%]"
+          href={`/img/hakpilih-${qrId}.png`}
+          download={`hakpilih-${qrId}.png`}>Unduh Gambar</a
+        >
+      </div>
+    </div>
   </main>
 </Layout>
-
-<style>
-  main {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  canvas {
-    width: 13em;
-    height: 13em;
-  }
-
-  .card {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  h2 {
-    width: 85%;
-  }
-
-  a {
-    margin-bottom: 1.3em !important;
-  }
-</style>
-
-<script>
-  import QRCode from "qrcode";
-
-  const canvas = document.querySelector("canvas");
-
-  // Mengambil pathname sebagai patokan qrId
-  const qrId = location.pathname.replace("/qr/", "");
-
-  QRCode.toCanvas(canvas, qrId, { width: 228.8 });
-</script>
