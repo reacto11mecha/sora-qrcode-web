@@ -1,3 +1,4 @@
+import { Worker, isMainThread } from "worker_threads";
 import { fileURLToPath } from "url";
 import chalk from "chalk";
 import path from "path";
@@ -5,12 +6,19 @@ import fs from "fs";
 
 import type { AstroIntegration } from "astro";
 
-import { createImage } from "./createImage";
 import { ValidateData } from "../src/utils/validator";
 
 const filePath = path.join(path.resolve(), "data/data-partisipan.json");
 
-export const cardIntegration = (): AstroIntegration => {
+type integrationOptions = {
+  chunks?: number;
+};
+
+export const cardIntegration = (
+  options?: integrationOptions | undefined,
+): AstroIntegration => {
+  const chunkSize = options?.chunks ?? 10;
+
   return {
     name: "satori-sora-integration",
 
@@ -29,20 +37,62 @@ export const cardIntegration = (): AstroIntegration => {
 
         const participants = await ValidateData.parseAsync(unvalidatedData);
 
-        for (const participant of participants) {
-          const fileName = `hakpilih-${participant.name}-${participant.qrId}.png`;
-          const fullPathToFile = path.join(publicQr, fileName);
+        if (isMainThread) {
+          const chunks: (typeof participants)[] = [];
 
-          if (fs.existsSync(fullPathToFile)) continue;
+          for (let i = 0; i < participants.length; i += chunkSize) {
+            chunks.push(participants.slice(i, i + chunkSize));
+          }
 
-          logger.info(`${chalk.yellow("create")} - ${fileName}`);
+          const workerFile = path.join(
+            fileURLToPath(import.meta.url),
+            "../worker.mjs",
+          );
 
-          await createImage({
-            fileName,
-            filePath: fullPathToFile,
-            logger,
-            ...participant,
-          });
+          await Promise.all(
+            chunks.map(
+              (chunk, idx) =>
+                new Promise((resolve, reject) => {
+                  const worker = new Worker(workerFile);
+                  worker.postMessage(
+                    JSON.stringify({ chunk, dir: fileURLToPath(dir) }),
+                  );
+
+                  logger.info(
+                    `${chalk.blue("worker")} - started worker ${idx}`,
+                  );
+
+                  worker.on("message", (message) => {
+                    if (message.success) {
+                      for (const fileName of message.fileNames) {
+                        logger.info(`${chalk.yellow("done")} - ${fileName}`);
+                      }
+
+                      logger.info(
+                        `${chalk.blue("worker")} - ${chalk.yellow(
+                          "done",
+                        )} worker ${idx}`,
+                      );
+                      resolve("done");
+                    } else {
+                      logger.error(
+                        `${chalk.blue(
+                          "worker",
+                        )} ${idx} - error creating images: ${message.error}`,
+                      );
+
+                      reject(message.error);
+                    }
+                  });
+
+                  worker.on("error", (error) => {
+                    logger.error(
+                      `${chalk.blue("worker")} - error: ${error.message}`,
+                    );
+                  });
+                }),
+            ),
+          );
         }
       },
     },
