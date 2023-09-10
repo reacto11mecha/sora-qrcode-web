@@ -101,6 +101,24 @@ List peserta yang lain
 - Ujang => https://contoh-repo-qrcode.vercel.app/qr/K3QG8YZ3URQ7MZQ
 - Tono => https://contoh-repo-qrcode.vercel.app/qr/04M19P35Y1J28VI
 
+## Konfigurasi tambahan
+
+Semisal layanan hosting memiliki core CPU yang memang banyak dan memadai, anda bisa mempercepat waktu build dengan mengubah konfigurasi di file [`astro.config.ts`](./astro.config.ts) seperti dibawah ini.
+
+```ts
+export default defineConfig({
+  integrations: [
+    tailwind(),
+    cardIntegration({
+      chunks: 10, // jumlah default
+    }),
+    react(),
+  ],
+});
+```
+
+Dengan mengubah nilai ini, anda bisa menentukan per-worker mengenerate berapa gambar dalam satu waktu.
+
 ## Lisensi
 
 Repositori ini bernaung dibawah lisensi [GPLv3](LICENSE).
