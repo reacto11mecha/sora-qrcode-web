@@ -23,74 +23,48 @@ Tekan tombol `Use this template` dan pilih [`Create a new repository`](https://g
 
 ![Pakai Template Repositori Ini](./assets/001-pakai-template.png)
 
-Buat repositori sebagai private repo dikarenakan akan terdapat informasi sensitif di dalamnya.
+Buat repositori sebagai private repo dikarenakan akan terdapat informasi sensitif di dalamnya. Jika sudah yakin, lanjut `Create repository`.
 
 ![Buat Repositori Private](./assets/002-buat-repositori.png)
 
-Lalu clone repositori private tersebut ke komputer lokal.
+Kurang lebih tampilannya akan terlihat seperti ini setelah menggunakan template, biarkan seperti ini terlebih dahulu.
 
-![Clone ke komputer lokal](./assets/003-clone-ke-local.png)
-
-### Menginstall dependensi
-
-Install dependensi yang diperlukan supaya web ini dapat berjalan. Bisa menggunakan pnpm (disarankan) atau menggunakan npm.
-
-```sh
-npm install
-
-# atau menggunakan pnpm
-pnpm install
-```
-
-![Hasil setelah menjalankan pnpm install](./assets/004-install-dependensi.png)
+![Kondisi repositori di github](./assets/003-setelah-dibuat.png)
 
 ### Unduh data keseluruhan partisipan
 
 Buka halaman administrator voting, menuju ke halaman partisipan. Disitu akan ditampilkan siapa saja peserta dan beberapa tombol yang dapat digunakan. Klik tombol `Export JSON` untuk mendapatkan data keseluruhan peserta.
 
-![Tekan tombol Export JSON untuk mendapatkan data keseluruhan peserta](./assets/005-export-json.png)
+![Tekan tombol Export JSON untuk mendapatkan data keseluruhan peserta](./assets/004-export-json.png)
 
-Akan muncul prompt unduh, letakan dalam folder `/data` dengan nama `data-partisipan.json` (secara default seperti ini).
+Akan muncul prompt unduh, simpan file tersebut untuk nantinya di upload ke repositori yang berada di github.
 
-![Download file json ke folder data](./assets/006-download-data.png)
+![Download file json ke komputer](./assets/005-download-data.png)
 
-### Membuild web
+### Edit file `.gitignore` yang ada di github
 
-Setelah data sudah siap, saatnya build aplikasi terlebih dahulu supaya dapat di preview di lokal dan tidak terlalu menjadi beban. Jalankan perintah dibawah ini untuk membuild web ini.
-
-```sh
-npm build
-
-# atau menggunakan pnpm
-pnpm build
-```
-
-![Hasil output setelah menjalankan build](./assets/007-run-build.png)
-
-### Komentari baris yang ada di `.gitignore`
-
-Pada awalnya data json yang di dapatkan dari administrator awalnya tidak bisa di commit beserta gambar yang dihasilkan, oleh karena itu komentari 2 baris terakhir yang ada di file [`.gitignore`](./.gitignore)
+Pada awalnya data json yang di dapatkan dari administrator awalnya tidak bisa ditambahkan, oleh karena itu komentari baris terakhir yang ada di file [`.gitignore`](./.gitignore)
 
 ```diff
 # Komentari dua baris di bawah ini
 # ketika sudah di clone
 -data/*.json
--public/img/*.png
 +# data/*.json
-+# public/img/*.png
 ```
 
-![Setelah di comment](./assets/008-setelah-comment-gitignore.png)
+![Setelah di comment](./assets/006-setelah-comment-gitignore.png)
 
-### Push perubahan ke repositori remote
+Jika sudah, jangan lupa untuk commit perubahan yang sudah dibuat.
 
-Jangan lupa tambahkan, commit, dan push!
+### Upload file `data-partisipan.json` ke folder [`data`](./data)
 
-```sh
-git add .
-git commit -m "menambahkan informasi"
-git push
-```
+Jika sudah memberi comment pada file `.gitignore`, sekarang waktunya untuk mengupload file yang tadi sudah di download ke repositori.
+
+![Upload file di folder data](./assets/007-upload-file.png)
+
+Ikuti alur dan jangan lupa untuk commit file tersebut.
+
+![Setelah upload file](./assets/008-setelah-upload-file.png)
 
 ## Hosting
 
@@ -118,14 +92,14 @@ Berikut ini adalah langkah-langkah supaya bisa di host static ke vercel.
 
 Web sudah bisa di akses sekarang, sebagai contoh, website https://contoh-repo-qrcode.vercel.app/ adalah contoh yang dapat peserta akses.
 
-Contoh untuk QR Cecep, bisa akses halaman https://contoh-repo-qrcode.vercel.app/qr/7CRO9MTNJ3WW41A dan dibawah ini hasil QR Setelah di download.
+Contoh untuk QR Cecep, bisa akses halaman https://contoh-repo-qrcode.vercel.app/qr/NPOXS0VBJ1XTJK6 dan dibawah ini hasil QR Setelah di download.
 
 ![Contoh QR Code Cecep](./assets/qr-cecep.png)
 
 List peserta yang lain
 
-- Ujang => https://contoh-repo-qrcode.vercel.app/qr/4KV9S7ISMNBRUCI
-- Tono => https://contoh-repo-qrcode.vercel.app/qr/98HICZTKNDX1G0P
+- Ujang => https://contoh-repo-qrcode.vercel.app/qr/K3QG8YZ3URQ7MZQ
+- Tono => https://contoh-repo-qrcode.vercel.app/qr/04M19P35Y1J28VI
 
 ## Lisensi
 
