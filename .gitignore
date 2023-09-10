@@ -23,4 +23,3 @@ pnpm-debug.log*
 # Komentari dua baris di bawah ini
 # ketika sudah di clone
 data/*.json
-public/img/*.png

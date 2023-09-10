@@ -1,116 +1,47 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import chalk from "chalk";
+import { Canvas } from "@/components/Canvas";
+import Layout from "@/layouts/Layout.astro";
+
 import path from "path";
 import fs from "fs";
 
 import { ValidateData } from "../../utils/validator";
-import { createImage } from "../../utils/createImage";
 
 export async function getStaticPaths() {
   const filePath = path.join(path.resolve(), "data/data-partisipan.json");
-  const publicQr = path.join(path.resolve(), "public/img");
 
   if (!fs.existsSync(filePath))
     throw new Error(
-      "Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!"
+      "Tidak ada file data-partisipan.json di folder data! Silahkan cek kembali apabila file tersebut sudah ditambahkan!",
     );
 
   const unvalidatedData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
   const data = await ValidateData.parseAsync(unvalidatedData);
 
-  const remappedData = await Promise.all(
-    data.map(async (participant) => {
-      const reformattedName = participant.name.split(" | ")[1].trim();
-
-      return {
-        params: { id: participant.qrId },
-        props: { name: reformattedName, qrId: participant.qrId },
-      };
-    })
-  );
-
-  for (const participant of remappedData) {
-    const fileName = `hakpilih-${participant.props.name}-${participant.props.qrId}.png`;
-    const fullPathToFile = path.join(publicQr, fileName);
-
-    if (fs.existsSync(fullPathToFile)) continue;
-
-    console.log(
-      `${chalk.yellow("not found")} - ${fileName} | ${chalk.green(
-        "Creating new one"
-      )}`
-    );
-
-    await createImage({
-      fileName,
-      filePath: fullPathToFile,
-      ...participant.props,
-    });
-  }
-
-  return remappedData;
+  return data.map((participant) => ({
+    params: { id: participant.qrId },
+    props: participant,
+  }));
 }
 
 const { name, qrId } = Astro.props;
 ---
 
 <Layout title={`Kode QR sebagai hak pilih untuk ${name} | ${qrId}`}>
-  <main>
-    <article class="card">
-      <canvas></canvas>
+  <main class="flex h-screen items-center justify-center px-5">
+    <div class="border p-8 flex flex-col gap-8">
+      <Canvas qrId={qrId} client:load />
 
-      <h2>{name}</h2>
+      <div class="flex flex-col gap-5 text-center items-center font-poppins">
+        <h2 class="font-bold text-2xl">{name}</h2>
 
-      <a
-        href={`/img/hakpilih-${name}-${qrId}.png`}
-        download={`hakpilih-${name}-${qrId}.png`}
-        ><button>Unduh Gambar</button></a
-      >
-    </article>
+        <a
+          class="text-lg font-lato bg-blue-600 text-white rounded py-1 w-[85%]"
+          href={`/img/hakpilih-${qrId}.png`}
+          download={`hakpilih-${qrId}.png`}>Unduh Gambar</a
+        >
+      </div>
+    </div>
   </main>
 </Layout>
-
-<style>
-  main {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  canvas {
-    width: 13em;
-    height: 13em;
-  }
-
-  .card {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  h2 {
-    width: 85%;
-  }
-
-  a {
-    margin-bottom: 1.3em !important;
-  }
-</style>
-
-{/* eslint-disable-next-line astro/valid-compile */}
-<script type="module" hoist>
-  import QRCode from "qrcode";
-
-  const canvas = document.querySelector("canvas");
-
-  // Mengambil pathname sebagai patokan qrId
-  const qrId = location.pathname.replace("/qr/", "");
-
-  QRCode.toCanvas(canvas, qrId, { width: "228.8" });
-</script>
