@@ -33,11 +33,11 @@ const { name, qrId } = Astro.props;
     <div class="border p-8 flex flex-col gap-8">
       <Canvas qrId={qrId} client:load />
 
-      <div class="flex flex-col gap-5 text-center items-center">
+      <div class="flex flex-col gap-5 text-center items-center font-poppins">
         <h2 class="font-bold text-2xl">{name}</h2>
 
         <a
-          class="text-lg bg-blue-600 text-white rounded p-[0.1rem] w-[85%]"
+          class="text-lg font-lato bg-blue-600 text-white rounded py-1 w-[85%]"
           href={`/img/hakpilih-${qrId}.png`}
           download={`hakpilih-${qrId}.png`}>Unduh Gambar</a
         >

@@ -40,15 +40,16 @@ export const InputQr = () => {
       >
         <input
           value={qrId}
-          onChange={(e) => setQrId(e.target.value)}
+          onChange={(e) => setQrId(e.target.value.trim())}
           disabled={isLoading}
           placeholder="Masukan QR ID"
           className="w-full border p-2 h-12 rounded-md focus-visible:border-neutral-900 focus-visible:border-[0.2px]"
         />
 
         <button
-          className={`w-full ${isLoading ? "bg-neutral-600" : "bg-neutral-900"
-            } text-white rounded-lg p-1 hover:bg-neutral-600 hover:border-neutral-400 h-12 flex justify-center items-center`}
+          className={`w-full ${
+            isLoading ? "bg-neutral-600" : "bg-neutral-900"
+          } text-white rounded-lg p-1 hover:bg-neutral-600 hover:border-neutral-400 h-12 flex justify-center items-center`}
           disabled={isLoading || qrId === ""}
         >
           {isLoading ? (
@@ -61,7 +62,9 @@ export const InputQr = () => {
 
       <div className="mt-3 text-xl">
         {isError ? (
-          <div className="text-red-600">Peserta pemilihan tidak ditemukan!</div>
+          <div className="text-red-600 font-poppins">
+            Peserta pemilihan tidak ditemukan!
+          </div>
         ) : null}
 
         {!isError && !isLoading && identity ? (
@@ -71,14 +74,22 @@ export const InputQr = () => {
               <table>
                 <tbody>
                   <tr>
-                    <td className="font-bold">Nama</td>
-                    <td className="font-bold sm:indent-1 md:indent-2 lg:indent-3">:</td>
-                    <td className="indent-2 text-center sm:indent-1  md:indent-2 sm:text-left">{identity.name}</td>
+                    <td className="font-bold font-poppins">Nama</td>
+                    <td className="font-bold sm:indent-1 md:indent-2 lg:indent-3">
+                      :
+                    </td>
+                    <td className="indent-2 text-center sm:indent-1  md:indent-2 sm:text-left">
+                      {identity.name}
+                    </td>
                   </tr>
                   <tr>
-                    <td className="font-bold">Bagian dari</td>
-                    <td className="font-bold sm:indent-1 md:indent-2 lg:indent-3">:</td>
-                    <td className="indent-2 text-center sm:indent-1  md:indent-2 sm:text-left">{identity.subpart}</td>
+                    <td className="font-bold font-poppins">Bagian dari</td>
+                    <td className="font-bold sm:indent-1 md:indent-2 lg:indent-3">
+                      :
+                    </td>
+                    <td className="indent-2 text-center sm:indent-1  md:indent-2 sm:text-left">
+                      {identity.subpart}
+                    </td>
                   </tr>
                 </tbody>
               </table>
